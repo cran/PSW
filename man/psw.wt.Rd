@@ -22,21 +22,21 @@ closer to the average treatment effect (ATE) with larger value of \code{K}. \cod
 }
 \value{
 A list of weighting method, fitted propensity score model, estimated propenstity scores, estimated propensity score weights,
-weighted estimator and standard deviation estimator
+weighted estimator and standard error estimator
 \item{weight}{weighting method.}
 \item{ps.model}{object returned by fitting the propensity score model using \code{glm} with \code{"binomial"} family.}
 \item{ps.hat}{estimated propensity score.}
 \item{W}{estimated propensity score weight.}
 \item{est.wt}{weighted estimator for mean difference when \code{family = "gaussian"}.}
-\item{std.wt}{standard deviation for \code{est.wt}.}
+\item{std.wt}{standard error for \code{est.wt}.}
 \item{est.risk.wt}{weighted estimator for risk difference when \code{family = "binomial"}.}
-\item{std.risk.wt}{standard deviation for \code{est.risk.wt}.}
+\item{std.risk.wt}{standard error for \code{est.risk.wt}.}
 \item{est.rr.wt}{weighted estimator for relative risk when \code{family = "binomial"}.}
-\item{std.rr.wt}{standard deviation for \code{est.rr.wt}.}
+\item{std.rr.wt}{standard error for \code{est.rr.wt}.}
 \item{est.or.wt}{weighted estimator for odds ratio when \code{family = "binomial"}.}
-\item{std.or.wt}{standard deviation for \code{est.or.wt}.}
+\item{std.or.wt}{standard error for \code{est.or.wt}.}
 \item{est.lor.wt}{weighted estimator for log odds ratio when \code{family = "binomial"}.}
-\item{std.lor.wt}{standard deviation for \code{est.lor.wt}.}
+\item{std.lor.wt}{standard error for \code{est.lor.wt}.}
 }
 \description{
 \code{psw.wt} is used to estimate the weighted treatment effect estimator (without double robustness).

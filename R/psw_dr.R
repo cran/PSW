@@ -13,15 +13,15 @@
 #' @details \code{psw.dr} is used to estimate the doubly robust estimator, \eqn{\hat{\Delta}_{DR}},
 #' and make inference using the sandwich variance that adjusts for the sampling variability in the estimated propensity score.
 #' @return A list of weighting method, fitted propensity score model, estimated propenstity scores, estimated propensity score weights,
-#' doubly robust estimator and standard deviation estimator.
+#' doubly robust estimator and standard error estimator.
 #' \item{weight}{weighting method.}
 #' \item{ps.model}{object returned by fitting the propensity score model using \code{glm} with \code{"binomial"} family.}
 #' \item{ps.hat}{estimated propensity score.}
 #' \item{W}{estimated propensity score weight.}
 #' \item{est.dr}{doubly robust estimator for mean difference when \code{family = "gaussian"}.}
-#' \item{std.dr}{standard deviation for \code{est.dr}.}
+#' \item{std.dr}{standard error for \code{est.dr}.}
 #' \item{est.risk.dr}{doubly robust estimator for risk difference when \code{family = "binomial"}.}
-#' \item{std.risk.dr}{standard deviation for \code{est.risk.dr}.}
+#' \item{std.risk.dr}{standard error for \code{est.risk.dr}.}
 #' @export
 #' @examples
 #' # Load the test data set

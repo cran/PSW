@@ -78,19 +78,19 @@
 #' \code{V.name} is the row name and \code{"treated.mean"}, \code{"treated.var"}, \code{"control.mean"}, \code{"control.var"}, \code{"std.diff.pct"} are column names.}
 #' \item{std.diff.after}{A data frame of weighed mean, variance, and standardized mean difference for covariates in \code{V.name} by treatment groups after weighting.}
 #' \item{est.wt}{weighted estimator for mean difference when \code{wt=T} and \code{family = "gaussian"}.}
-#' \item{std.wt}{standard deviation for \code{est.wt}.}
+#' \item{std.wt}{standard error for \code{est.wt}.}
 #' \item{est.dr}{doubly robust estimator for mean difference when \code{dr=T} and \code{family = "gaussian"}.}
-#' \item{std.dr}{standard deviation for \code{est.dr}.}
+#' \item{std.dr}{standard error for \code{est.dr}.}
 #' \item{est.risk.wt}{weighted estimator for risk difference when \code{wt=T} and \code{family = "binomial"}.}
-#' \item{std.risk.wt}{standard deviation for \code{est.risk.wt}.}
+#' \item{std.risk.wt}{standard error for \code{est.risk.wt}.}
 #' \item{est.risk.dr}{doubly robust estimator for risk difference when \code{dr=T} and \code{family = "binomial"}.}
-#' \item{std.risk.dr}{standard deviation for \code{est.risk.dr}.}
+#' \item{std.risk.dr}{standard error for \code{est.risk.dr}.}
 #' \item{est.rr.wt}{weighted estimator for relative risk when \code{wt=T} and \code{family = "binomial"}.}
-#' \item{std.rr.wt}{standard deviation for \code{est.rr.wt}.}
+#' \item{std.rr.wt}{standard error for \code{est.rr.wt}.}
 #' \item{est.or.wt}{weighted estimator for odds ratio when \code{wt=T} and \code{family = "binomial"}.}
-#' \item{std.or.wt}{standard deviation for \code{est.or.wt}.}
+#' \item{std.or.wt}{standard error for \code{est.or.wt}.}
 #' \item{est.lor.wt}{weighted estimator for log odds ratio when \code{wt=T} and \code{family = "binomial"}.}
-#' \item{std.lor.wt}{standard deviation for \code{est.lor.wt}.}
+#' \item{std.lor.wt}{standard error for \code{est.lor.wt}.}
 #' \item{V.name}{covariates in the specification test or balance diagnosis.}
 #' \item{g.B1.hat}{a vector of transformed weighted average for covariates in the treated group when \code{spec.test=T}.}
 #' \item{g.B0.hat}{a vector of transformed weighted average for covariates in the control group when \code{spec.test=T}.}
@@ -163,7 +163,7 @@ psw <- function( data, form.ps, weight, std.diff = FALSE, mirror.hist = FALSE, a
   #   K: coefficient of trapezoidal weight, K is the slope of trapezoidal edge, K = 4 by default
   #
   # Return
-  #   A list composed of point estimation (est), standard deviation (std), supplied proprnsity model, propensity score coefficients,
+  #   A list composed of point estimation (est), standard error (std), supplied proprnsity model, propensity score coefficients,
   #   fitted propensity score, propensity score weights.
 
   # Outcome family can only be "gaussian" or "binomial"

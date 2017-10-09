@@ -81,7 +81,7 @@ psw.wt.core <- function( dat, beta.hat, omega, Q, trt.var, out.var, family, Xnam
   #   K: coefficient of trapezoidal weight, K is the slope of left trapezoidal edge, K=4 by default
   #
   # Return
-  #   A list composed of point estimation (est), standard deviation (std).
+  #   A list composed of point estimation (est), standard error (std).
 
   n <- nrow(dat);  # number of sujects
 
@@ -100,7 +100,7 @@ psw.wt.core <- function( dat, beta.hat, omega, Q, trt.var, out.var, family, Xnam
   }
 
 
-  ## standard deviation estimation
+  ## standard error estimation
   Amat <- Bmat <- 0;  # An and Bn matrix for variance calculation
   for (i in 1 : n) {
     Xi <- as.numeric( c( 1, dat[ i, Xname ] ) );
@@ -199,7 +199,7 @@ psw.dr.core <- function(dat, beta.hat, omega, Q, out.ps, out.outcome, trt.var, o
   #   delta: closeness to non-differential point in omega function, delta=0.002 by default
   #   K: coefficient of trapezoidal weight, K is the slope of left trapezoidal edge, K=4 by default
   # Return
-  #   A list of point estimation and standard deviation estimation for the double roubst estimator
+  #   A list of point estimation and standard error estimation for the double roubst estimator
 
   n <- nrow( dat );
   W <- omega/Q;  # generic weight;
