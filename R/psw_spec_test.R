@@ -41,8 +41,8 @@
 #' V.name <- c( "X1", "X2", "X3", "X4" );
 #' # A vector of transformation types for covariates in V.name.
 #' trans.type <- c( "identity", "identity", "logit", "logit" );
-#' tmp<-psw.spec.test( data = test_data, weight = "MW", form.ps = form.ps,
-#' V.name = V.name, trans.type = trans.type );
+#' tmp <- psw.spec.test( data = test_data, form.ps = form.ps,
+#' weight = "MW", V.name = V.name, trans.type = trans.type );
 #'
 psw.spec.test <- function( data, form.ps, weight, V.name, trans.type, K=4 ) {
 

@@ -54,7 +54,7 @@ psw.mirror.hist <- function( data, form.ps, weight, add.weight = FALSE, nclass=5
                     ps.below = ps.hat[ data[ , trt.var] == 1 ],
                     wt.above = W[ data[ , trt.var] == 0 ],
                     wt.below = W[ data[ , trt.var] == 1 ],
-                    add.weight = FALSE,
+                    add.weight = add.weight,
                     label.above = paste( trt.var, "=0", sep="" ),
                     label.below = paste( trt.var, "=1", sep="" ),
                     nclass = nclass );

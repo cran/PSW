@@ -4,7 +4,7 @@
 #' @param data data frame to be used.
 #' @param form.ps propensity score model.
 #' @param weight weighting method to be used. Available methods are \code{"ATE"},  \code{"ATT"}, \code{"ATC"}, \code{"MW"}, \code{"OVERLAP"}, and \code{"TRAPEZOIDAL"}.
-#' @param V.name a vector of covariates in balance diagnosis.
+#' @param V.name a vector of covariates on which standardized mean difference is computed. If \code{V.name = NULL}, the covariates in propensity score model are used.
 #' @param K value of \eqn{K} in \eqn{\omega(e_i) = min(1, K min(e_i, 1-e_i)) } for \code{"TRAPEZOIDAL"} weight.
 #' @return A list of weighting method, fitted propensity score model, estimated propenstity scores, estimated propensity score weights,
 #' standardized mean difference before and after weighting adjustment.
@@ -27,7 +27,7 @@
 #' tmp <- psw.balance( data = test_data, weight = "MW", form.ps = form.ps,
 #' V.name = V.name );
 #'
-psw.balance <- function(data, form.ps, weight, V.name, K = 4 ) {
+psw.balance <- function(data, form.ps, weight, V.name = NULL, K = 4 ) {
 
   # check if data is a data frame
   if ( !( is.data.frame( data ) ) ) {
@@ -38,6 +38,11 @@ psw.balance <- function(data, form.ps, weight, V.name, K = 4 ) {
   out.ps <- ps.model( dat = data, form.ps = form.ps );
   trt.var <- as.character( terms( out.ps$fm )[[ 2 ]] );
   Xname <- names( coef( out.ps$fm ) )[-1];  # covariate name in propensity score model
+
+  # covariates for balance checking
+  if ( is.null( V.name ) ) {
+    V.name <- Xname;
+  }
 
   ps.hat <- out.ps$ps.hat;  # estimated ps
   omega <- sapply( ps.hat, calc.omega, weight = weight, delta = 0.002, K = K);
@@ -54,8 +59,6 @@ psw.balance <- function(data, form.ps, weight, V.name, K = 4 ) {
 
   V.mat <- as.matrix( data[ , V.name, drop=F ] ) ;
   trt <- as.numeric( data[ , trt.var ] ) ;
-  #tmp <- psw.balance.core( Xmat = as.matrix( data[ , Xname, drop=F ] ), Xname = Xname,
-  #                         weight = weight, W = W, Z = as.numeric( data[ , trt.var ] ) );
   tmp <- psw.balance.core( Xmat = V.mat, Xname = V.name,
                            weight = weight, W = W, Z = as.numeric( data[ , trt.var ] ) );
 

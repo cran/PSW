@@ -1,8 +1,8 @@
 
-#' @title Propensity score weighting with doubly robust estimation
-#' @description \code{psw.dr} is the function to estimate the doubly robust estimator for mean difference
+#' @title Propensity score weighting with augmented estimation
+#' @description \code{psw.aug} is the function to estimate the augmented estimator for mean difference
 #' (mean outcome difference for \code{"gaussian"} family and risk difference for \code{"binomial"} family).
-#' The doubly robust estimator is consistent when either the propensity score model or the outcome model is correctly specified.
+#' The augmented estimator is consistent for the estimand defined by the corresponding propensity score model.
 #' @param data data frame to be used.
 #' @param form.ps propensity score model.
 #' @param weight weighting method to be used. Available methods are \code{"ATE"},  \code{"ATT"}, \code{"ATC"}, \code{"MW"}, \code{"OVERLAP"}, and \code{"TRAPEZOIDAL"}.
@@ -10,18 +10,18 @@
 #' @param family outcome family, either \code{"gaussian"} or \code{"binomial"}. \code{family="gaussian"} by default.
 #' @param K value of \eqn{K} in \eqn{\omega(e_i) = min(1, K min(e_i, 1-e_i)) } for \code{"TRAPEZOIDAL"} weight. The estimand is
 #' closer to the average treatment effect (ATE) with larger value of \code{K}. \code{K=4} by default.
-#' @details \code{psw.dr} is used to estimate the doubly robust estimator, \eqn{\hat{\Delta}_{DR}},
+#' @details \code{psw.aug} is used to estimate the augmented estimator, \eqn{\hat{\Delta}_{aug}},
 #' and make inference using the sandwich variance that adjusts for the sampling variability in the estimated propensity score.
 #' @return A list of weighting method, fitted propensity score model, estimated propenstity scores, estimated propensity score weights,
-#' doubly robust estimator and standard error estimator.
+#' augmented estimator and associated standard error.
 #' \item{weight}{weighting method.}
 #' \item{ps.model}{object returned by fitting the propensity score model using \code{glm} with \code{"binomial"} family.}
 #' \item{ps.hat}{estimated propensity score.}
 #' \item{W}{estimated propensity score weight.}
-#' \item{est.dr}{doubly robust estimator for mean difference when \code{family = "gaussian"}.}
-#' \item{std.dr}{standard error for \code{est.dr}.}
-#' \item{est.risk.dr}{doubly robust estimator for risk difference when \code{family = "binomial"}.}
-#' \item{std.risk.dr}{standard error for \code{est.risk.dr}.}
+#' \item{est.aug}{augmented estimator for mean difference when \code{family = "gaussian"}.}
+#' \item{std.aug}{standard error for \code{est.aug}.}
+#' \item{est.risk.aug}{augmented estimator for risk difference when \code{family = "binomial"}.}
+#' \item{std.risk.aug}{standard error for \code{est.risk.aug}.}
 #' @export
 #' @examples
 #' # Load the test data set
@@ -30,10 +30,10 @@
 #' form.ps <- "Z ~ X1 + X2 + X3 + X4";
 #' # Outcome model
 #' form.out <- "Y ~ X1 + X2 + X3 + X4";
-#' tmp <- psw.dr( data = test_data, weight = "ATE", form.ps = form.ps,
+#' tmp <- psw.aug( data = test_data, form.ps = form.ps, weight = "ATE",
 #' form.outcome = form.out, family="gaussian" );
 #'
-psw.dr <- function( data, form.ps, weight, form.outcome, family="gaussian", K=4 ) {
+psw.aug <- function( data, form.ps, weight, form.outcome, family="gaussian", K=4 ) {
 
   # Outcome family can only be "gaussian" or "binomial"
   if ( !( family %in% c( "gaussian", "binomial" ) ) ) {
@@ -72,16 +72,16 @@ psw.dr <- function( data, form.ps, weight, form.outcome, family="gaussian", K=4 
 
   out.outcome <- outcome.model( dat=data, form=as.formula(form.outcome), trt.var=trt.var, family=family );  # fit outcome model;
   out.var <- as.character( terms( out.outcome$fm1 )[[2]] );
-  res.dr <- psw.dr.core( dat = data, beta.hat = beta.hat, omega = omega, Q = Q, out.ps = out.ps, out.outcome = out.outcome,
-                         trt.var = trt.var, out.var = out.var, weight = weight, family = family, delta = 0.002, K = K );
+  res.aug <- psw.aug.core( dat = data, beta.hat = beta.hat, omega = omega, Q = Q, out.ps = out.ps, out.outcome = out.outcome,
+                         trt.var = trt.var, out.var = out.var, weight = weight, family = family,  K = K, delta = 0.002 );
   if ( family == "gaussian" ) {
-    res$est.dr <- res.dr$est;
-    res$std.dr <- res.dr$std;
+    res$est.aug <- res.aug$est;
+    res$std.aug <- res.aug$std;
   }
   if ( family == "binomial" ) {
     # risk difference
-    res$est.risk.dr <- res.dr$est.risk;
-    res$std.risk.dr <- res.dr$std.risk;
+    res$est.risk.aug <- res.aug$est.risk;
+    res$std.risk.aug <- res.aug$std.risk;
   }
 
   return( res );

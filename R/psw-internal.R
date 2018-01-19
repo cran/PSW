@@ -185,8 +185,8 @@ psw.wt.core <- function( dat, beta.hat, omega, Q, trt.var, out.var, family, Xnam
   return( ans );
 }
 
-psw.dr.core <- function(dat, beta.hat, omega, Q, out.ps, out.outcome, trt.var, out.var, weight, family, delta=0.002, K=4){
-  # Core function for double robust propensity score weighting analysis
+psw.aug.core <- function(dat, beta.hat, omega, Q, out.ps, out.outcome, trt.var, out.var, weight, family, K, delta=0.002){
+  # Core function for augmented estimation
   #
   # Args:
   #   dat: date to be used.
@@ -196,10 +196,10 @@ psw.dr.core <- function(dat, beta.hat, omega, Q, out.ps, out.outcome, trt.var, o
   #   out.var: outcome variable.
   #   weight: propensity score weighting method.
   #   family: outcome family
+  #   K: coefficient of trapezoidal weight, K is the slope of left trapezoidal edge
   #   delta: closeness to non-differential point in omega function, delta=0.002 by default
-  #   K: coefficient of trapezoidal weight, K is the slope of left trapezoidal edge, K=4 by default
   # Return
-  #   A list of point estimation and standard error estimation for the double roubst estimator
+  #   A list of point estimation and standard error estimation for the augmented estimator
 
   n <- nrow( dat );
   W <- omega/Q;  # generic weight;
@@ -307,7 +307,6 @@ psw.dr.core <- function(dat, beta.hat, omega, Q, out.ps, out.outcome, trt.var, o
   Bmat <- Bmat/n;
   Amat.inv <- solve(Amat) ;
   var.mat <- ( Amat.inv %*% Bmat %*% t(Amat.inv) )/n;
-  #tmp1 <- c(1, 1, -1, rep(0, length = n.alpha1+n.alpha0+n.beta) );
   var.mat <- var.mat[ c(1:4), c(1:4) ];
 
   if ( family == "gaussian" ) {
@@ -328,7 +327,7 @@ psw.dr.core <- function(dat, beta.hat, omega, Q, out.ps, out.outcome, trt.var, o
   return( ans );
 }
 
-psw.spec.test.core <- function( X.mat, V.mat, V.name, trt, beta.hat, omega, Q, trans.type, weight, delta=0.002, K=4 ) {
+psw.spec.test.core <- function( X.mat, V.mat, V.name, trt, beta.hat, omega, Q, trans.type, weight, K, delta=0.002 ) {
   # check and test covariate balance between treatment and control arms.
   #
   # Args:
@@ -341,8 +340,8 @@ psw.spec.test.core <- function( X.mat, V.mat, V.name, trt, beta.hat, omega, Q, t
   #   Q: denominator of PS weight function
   #   trans.type: transformation types applied to covariates, including log, logit, Fisher's Z, square root, and identity transformation.
   #   weight: weighting method.
+  #   K: coefficient of trapezoidal weight, K is the slope of left trapezoidal edge.
   #   delta: closeness to non-differential point in omega function, delta=0.002 by default
-  #   K: coefficient of trapezoidal weight, K is the slope of left trapezoidal edge, K=4 by default
   #
   # Returns:
   #   A list of balance test parameters
@@ -430,7 +429,7 @@ psw.spec.test.core <- function( X.mat, V.mat, V.name, trt, beta.hat, omega, Q, t
                 ) );
 }
 
-mirror.hist.core <- function( ps.above, ps.below, wt.above, wt.below, add.weight = FALSE,
+mirror.hist.core <- function( ps.above, ps.below, wt.above, wt.below, add.weight,
                               label.above, label.below, nclass = 50 ) {
   # Mirror histogram is used to plot the mirror histogram showing the propensity score distribution overlap between groups.
   #   ps.above propensity score for the control.
@@ -455,13 +454,15 @@ mirror.hist.core <- function( ps.above, ps.below, wt.above, wt.below, add.weight
   x.range <- range( c(x0, x1) ) ;
   y.range <- c( -max( fm.x1$counts ), max( fm.x0$counts ) ) ;
 
+  par( las=1, lwd = 2, mar=c(5, 5, 4, 2), bty="n" );
+
   plot( x=x.range, y=y.range, xaxt="n", yaxt="n", type="n" ,
-        xlim=x.range, ylim=y.range, ylab="",
-        xlab="Propensity score", cex.lab=2 ) ;
-  axis( side=1, at=pretty( x.range ), cex.axis=2 ) ;
-  axis( side=2, at=pretty( y.range ) , labels=abs( pretty( y.range ) ), cex.axis=2 ) ;
-  title( ylab="Frequency", cex.lab=2, line=4 );
-  abline( h=0, lty=1 ) ;
+        xlim=x.range, ylim=y.range, ylab="", xlab="", cex.lab=1 ) ;
+  axis( side=1, at=pretty( x.range ), cex.axis=1 ) ;
+  axis( side=2, at=pretty( y.range ) , labels=abs( pretty( y.range ) ), cex.axis=1 ) ;
+  title( xlab="Propensity score", cex.lab=1 )
+  title( ylab="Frequency", cex.lab=1 );
+  abline( h=0, lty=1 );
 
   # plot the histogram above the horizontal line
   fm <- fm.x0 ;
@@ -951,13 +952,13 @@ diff.plot <- function( diff.before, diff.after, name, weight ) {
   # Returns
   #   A plot is generated
 
-  par( las=1, lwd = 2, mar=c(5, max( nchar(name) ), 4, 2), bty="n" );
+  par( las=1, lwd = 2, mar=c(5, max( nchar(name) ) + 4, 4, 2), bty="n" );
 
   x.range <- range( c(diff.before, diff.after) );
   y.range <- c(1, length(name));
   ord <- order( diff.before, decreasing = T );
   plot( x=x.range, y=y.range, xaxt="n", yaxt="n", type="n",
-        xlim=x.range, ylim=y.range, ylab="", xlab="Standardized difference" );
+        xlim=x.range, ylim=y.range, ylab="", xlab="Standardized mean difference" );
   axis( side=1, at=pretty( x.range ) );
   axis( side=2, at=length(name):1, labels=name[ord], tick=F );
   abline( v=0, lty=1, col="gray" );

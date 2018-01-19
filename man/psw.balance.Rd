@@ -4,7 +4,7 @@
 \alias{psw.balance}
 \title{Balance checking using standardized mean difference}
 \usage{
-psw.balance(data, form.ps, weight, V.name, K = 4)
+psw.balance(data, form.ps, weight, V.name = NULL, K = 4)
 }
 \arguments{
 \item{data}{data frame to be used.}
@@ -13,7 +13,7 @@ psw.balance(data, form.ps, weight, V.name, K = 4)
 
 \item{weight}{weighting method to be used. Available methods are \code{"ATE"},  \code{"ATT"}, \code{"ATC"}, \code{"MW"}, \code{"OVERLAP"}, and \code{"TRAPEZOIDAL"}.}
 
-\item{V.name}{a vector of covariates in balance diagnosis.}
+\item{V.name}{a vector of covariates on which standardized mean difference is computed. If \code{V.name = NULL}, the covariates in propensity score model are used.}
 
 \item{K}{value of \eqn{K} in \eqn{\omega(e_i) = min(1, K min(e_i, 1-e_i)) } for \code{"TRAPEZOIDAL"} weight.}
 }
